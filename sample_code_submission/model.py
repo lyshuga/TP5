@@ -21,9 +21,18 @@ class SimpleConvModel(nn.Module):
         self.linear_hidden_size = linear_hidden_size
         self.out_class = out_class
 
-        self.seq1 = nn.Sequential(nn.Conv2d(3, self.out_channel_conv, (5,5), stride=(3,3)),
+        self.seq1 = nn.Sequential(nn.Conv2d(3, 64, (5,5), stride=(3,3)),
                                   nn.MaxPool2d((5,5)),
                                   nn.ReLU())
+
+        self.seq12 = nn.Sequential(nn.Conv2d(3, 32, (5,5), stride=(3,3)),
+                          nn.MaxPool2d((5,5)),
+                          nn.ReLU())
+
+        self.seq13 = nn.Sequential(nn.Conv2d(3, 16, (5,5), stride=(3,3)),
+                  nn.MaxPool2d((5,5)),
+                  nn.ReLU())
+
 
         self.seq2 = nn.Sequential(nn.Linear(16 * 8 * 8, self.out_class),#self.linear_hidden_size),
                                   #nn.ReLU(),
@@ -32,7 +41,9 @@ class SimpleConvModel(nn.Module):
 
     def forward(self, x):
         out1 = self.seq1(x)
-        out2 = out1.view(-1, 16*8*8)
+        out12 = self.seq12(x)
+        out13 = self.seq13(x)
+        out2 = out13.view(-1, 16*8*8)
         out3 = self.seq2(out2)
         return out3
 
